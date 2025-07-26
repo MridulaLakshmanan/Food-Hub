@@ -140,7 +140,6 @@ const BrowseMaterials = () => {
       <Cart
         isOpen={isCartOpen}
         onClose={handleCartClose}
-        onCartUpdate={updateCartCount}
       />
 
       <Toaster />
