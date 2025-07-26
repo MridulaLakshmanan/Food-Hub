@@ -14,59 +14,24 @@ const BrowseMaterials = () => {
   const [sortBy, setSortBy] = useState('name');
   const [filterBy, setFilterBy] = useState('all');
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const [cartCount, setCartCount] = useState(0);
 
-  // Update cart count when component mounts and when cart changes
+  // Use custom hooks for data management
+  const { materials, categories, isLoading: materialsLoading, fetchMaterials } = useMaterials();
+  const { cart, addToCart, isLoading: cartLoading } = useCart();
+
+  // Fetch materials when filters change
   useEffect(() => {
-    setCartCount(cartManager.getCartCount());
-  }, []);
+    const params = {};
+    if (searchTerm) params.search = searchTerm;
+    if (selectedCategory !== 'all') params.category = selectedCategory;
+    if (sortBy) params.sort_by = sortBy;
+    if (filterBy !== 'all') params.filter_by = filterBy;
+    
+    fetchMaterials(params);
+  }, [searchTerm, selectedCategory, sortBy, filterBy, fetchMaterials]);
 
-  const updateCartCount = () => {
-    setCartCount(cartManager.getCartCount());
-  };
-
-  // Filter and sort materials
-  const filteredMaterials = rawMaterials
-    .filter(material => {
-      const matchesSearch = 
-        material.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        material.supplier.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        material.description.toLowerCase().includes(searchTerm.toLowerCase());
-      
-      const matchesCategory = selectedCategory === 'all' || material.category === selectedCategory;
-      
-      let matchesFilter = true;
-      switch (filterBy) {
-        case 'verified':
-          matchesFilter = material.supplier.verified;
-          break;
-        case 'instock':
-          matchesFilter = material.inStock;
-          break;
-        case 'group':
-          matchesFilter = material.groupPrice < material.price;
-          break;
-        default:
-          matchesFilter = true;
-      }
-      
-      return matchesSearch && matchesCategory && matchesFilter;
-    })
-    .sort((a, b) => {
-      switch (sortBy) {
-        case 'price':
-          return a.price - b.price;
-        case 'supplier':
-          return a.supplier.name.localeCompare(b.supplier.name);
-        case 'name':
-        default:
-          return a.name.localeCompare(b.name);
-      }
-    });
-
-  const handleAddToCart = (material, quantity, isGroup) => {
-    cartManager.addToCart(material, quantity, isGroup);
-    updateCartCount();
+  const handleAddToCart = async (material, quantity, isGroup) => {
+    await addToCart(material.id, quantity, isGroup);
   };
 
   const handleCartClick = () => {
