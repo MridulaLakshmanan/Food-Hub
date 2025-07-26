@@ -46,7 +46,7 @@ const BrowseMaterials = () => {
     <div className="min-h-screen bg-gray-50">
       <Navbar 
         onCartClick={handleCartClick}
-        cartCount={cartCount}
+        cartCount={cart.count}
       />
 
       <SearchAndFilters
