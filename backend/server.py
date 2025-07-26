@@ -119,9 +119,9 @@ async def get_suppliers():
         raise HTTPException(status_code=500, detail=f"Error fetching suppliers: {str(e)}")
 
 # Cart endpoints
+@api_router.get("/cart/{session_id}")
 async def get_cart(session_id: str):
     try:
-        from database import carts_collection
         cart = await carts_collection.find_one({"session_id": session_id})
         if not cart:
             return {"session_id": session_id, "items": [], "total": 0, "count": 0}
