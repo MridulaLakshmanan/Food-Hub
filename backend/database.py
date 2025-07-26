@@ -5,32 +5,17 @@ import os
 from motor.motor_asyncio import AsyncIOMotorClient
 import os
 
-# MongoDB connection - will be initialized after env vars are loaded
-mongo_url = None
-client = None
-db = None
+# MongoDB connection
+mongo_url = os.environ['MONGO_URL']
+client = AsyncIOMotorClient(mongo_url)
+db = client[os.environ['DB_NAME']]
 
-# Collections - will be initialized after database connection
-suppliers_collection = None
-categories_collection = None
-materials_collection = None
-carts_collection = None
-orders_collection = None
-
-def initialize_database():
-    """Initialize database connection and collections"""
-    global mongo_url, client, db, suppliers_collection, categories_collection, materials_collection, carts_collection, orders_collection
-    
-    mongo_url = os.environ['MONGO_URL']
-    client = AsyncIOMotorClient(mongo_url)
-    db = client[os.environ['DB_NAME']]
-    
-    # Initialize collections
-    suppliers_collection = db.suppliers
-    categories_collection = db.categories
-    materials_collection = db.raw_materials
-    carts_collection = db.carts
-    orders_collection = db.orders
+# Collections
+suppliers_collection = db.suppliers
+categories_collection = db.categories
+materials_collection = db.raw_materials
+carts_collection = db.carts
+orders_collection = db.orders
 
 async def seed_database():
     """Seed the database with initial data"""
