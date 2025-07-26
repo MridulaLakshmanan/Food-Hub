@@ -183,11 +183,14 @@ backend:
     file: "backend/server.py"
     stuck_count: 1
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
         - working: false
           agent: "testing"
           comment: "GET /api/orders/{session_id} endpoint returns 500 Internal Server Error due to MongoDB ObjectId serialization issue. Error: 'ObjectId' object is not iterable. The order is created successfully but cannot be retrieved due to JSON serialization of MongoDB ObjectId in the response."
+        - working: "unknown"
+          agent: "main"
+          comment: "Fixed ObjectId serialization issue by implementing recursive convert_objectids_to_strings function that properly handles nested ObjectIds in order documents. Updated get_orders endpoint to use this function instead of manual _id conversion."
 
   - task: "Database seeding"
     implemented: true
