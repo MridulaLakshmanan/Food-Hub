@@ -4,51 +4,43 @@ import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Separator } from './ui/separator';
-import { cartManager } from '../data/mockData';
+import { useCart } from '../hooks/useCart';
+import { ordersApi } from '../services/api';
 import { useToast } from '../hooks/use-toast';
 
-const Cart = ({ isOpen, onClose, onCartUpdate }) => {
-  const [cartItems, setCartItems] = useState([]);
+const Cart = ({ isOpen, onClose }) => {
+  const { cart, updateCartItem, removeFromCart, isLoading } = useCart();
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const { toast } = useToast();
 
-  useEffect(() => {
-    if (isOpen) {
-      setCartItems(cartManager.getCart());
-    }
-  }, [isOpen]);
-
-  const updateQuantity = (itemId, newQuantity, isGroup) => {
-    const updatedCart = cartManager.updateQuantity(itemId, newQuantity, isGroup);
-    setCartItems(updatedCart);
-    onCartUpdate();
+  const handleUpdateQuantity = async (itemId, newQuantity) => {
+    await updateCartItem(itemId, newQuantity);
   };
 
-  const removeItem = (itemId, isGroup) => {
-    const updatedCart = cartManager.removeFromCart(itemId, isGroup);
-    setCartItems(updatedCart);
-    onCartUpdate();
-    toast({
-      title: "Item Removed",
-      description: "Item has been removed from your cart.",
-    });
+  const handleRemoveItem = async (itemId) => {
+    await removeFromCart(itemId);
   };
 
   const handleCheckout = async () => {
     setIsCheckingOut(true);
     
-    // Simulate checkout process
-    setTimeout(() => {
-      cartManager.clearCart();
-      setCartItems([]);
-      onCartUpdate();
+    try {
+      const orderResult = await ordersApi.createOrder();
+      
       setIsCheckingOut(false);
       onClose();
       toast({
         title: "Order Placed Successfully! 🎉",
-        description: "Your order has been submitted and will be processed soon.",
+        description: `Your order #${orderResult.order_id} has been submitted and will be processed soon.`,
       });
-    }, 2000);
+    } catch (error) {
+      setIsCheckingOut(false);
+      toast({
+        title: "Error",
+        description: "Failed to place order. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   const total = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
