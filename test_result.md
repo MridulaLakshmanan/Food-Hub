@@ -229,8 +229,8 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Order history retrieval"
-  stuck_tasks:
+    - "All core functionality working"
+  stuck_tasks: []
   test_all: false
   test_priority: "high_first"
 
