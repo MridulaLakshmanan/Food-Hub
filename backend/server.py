@@ -319,12 +319,9 @@ async def create_order(request: CheckoutRequest):
 async def get_orders(session_id: str):
     try:
         orders = await orders_collection.find({"session_id": session_id}).to_list(100)
-        # Convert ObjectId to string for JSON serialization
-        for order in orders:
-            if "_id" in order:
-                order["id"] = str(order["_id"])
-                del order["_id"]
-        return orders
+        # Convert all ObjectIds to strings for JSON serialization
+        serialized_orders = convert_objectids_to_strings(orders)
+        return serialized_orders
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error fetching orders: {str(e)}")
 
