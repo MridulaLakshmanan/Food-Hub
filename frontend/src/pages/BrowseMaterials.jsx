@@ -4,7 +4,9 @@ import Navbar from '../components/Navbar';
 import SearchAndFilters from '../components/SearchAndFilters';
 import MaterialCard from '../components/MaterialCard';
 import Cart from '../components/Cart';
-import { rawMaterials, categories, cartManager } from '../data/mockData';
+import { useMaterials } from '../hooks/useMaterials';
+import { useCart } from '../hooks/useCart';
+import { ordersApi } from '../services/api';
 
 const BrowseMaterials = () => {
   const [searchTerm, setSearchTerm] = useState('');
