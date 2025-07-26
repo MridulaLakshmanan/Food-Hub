@@ -38,6 +38,8 @@ api_router = APIRouter(prefix="/api")
 @app.on_event("startup")
 async def startup_event():
     try:
+        # Initialize database connection
+        initialize_database()
         result = await seed_database()
         print(f"Database initialization: {result}")
     except Exception as e:
