@@ -231,7 +231,6 @@ test_plan:
   current_focus:
     - "Order history retrieval"
   stuck_tasks:
-    - "Order history retrieval"
   test_all: false
   test_priority: "high_first"
 
