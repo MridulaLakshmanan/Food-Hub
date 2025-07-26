@@ -34,6 +34,21 @@ orders_collection = db.orders
 # Import database functions
 from database import seed_database, get_all_suppliers, get_all_categories, get_materials_with_suppliers
 
+def convert_objectids_to_strings(data: Union[Dict, List, Any]) -> Union[Dict, List, Any]:
+    """
+    Recursively convert all MongoDB ObjectIds to strings in nested data structures
+    """
+    if isinstance(data, dict):
+        return {key: convert_objectids_to_strings(value) for key, value in data.items() if key != '_id'} | (
+            {'id': str(data['_id'])} if '_id' in data else {}
+        )
+    elif isinstance(data, list):
+        return [convert_objectids_to_strings(item) for item in data]
+    elif isinstance(data, ObjectId):
+        return str(data)
+    else:
+        return data
+
 # Create the main app
 app = FastAPI()
 
