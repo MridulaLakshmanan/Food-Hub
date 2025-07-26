@@ -43,8 +43,8 @@ const Cart = ({ isOpen, onClose }) => {
     }
   };
 
-  const total = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  const itemCount = cartItems.reduce((count, item) => count + item.quantity, 0);
+  const total = cart.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  const itemCount = cart.items.reduce((count, item) => count + item.quantity, 0);
 
   if (!isOpen) return null;
 
