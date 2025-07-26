@@ -69,7 +69,7 @@ const BrowseMaterials = () => {
               Browse Raw Materials
             </h1>
             <p className="text-gray-600 mt-1">
-              {filteredMaterials.length} materials found
+              {materials.length} materials found
               {selectedCategory !== 'all' && (
                 <span className="ml-2">
                   in {categories.find(cat => cat.id === selectedCategory)?.name}
@@ -82,47 +82,57 @@ const BrowseMaterials = () => {
           <div className="hidden sm:flex items-center space-x-4 text-sm text-gray-600">
             <div className="flex items-center space-x-1">
               <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-              <span>{rawMaterials.filter(m => m.inStock).length} In Stock</span>
+              <span>{materials.filter(m => m.inStock).length} In Stock</span>
             </div>
             <div className="flex items-center space-x-1">
               <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-              <span>{rawMaterials.filter(m => m.supplier.verified).length} Verified</span>
+              <span>{materials.filter(m => m.supplier.verified).length} Verified</span>
             </div>
             <div className="flex items-center space-x-1">
               <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
-              <span>{rawMaterials.filter(m => m.groupPrice < m.price).length} Group Deals</span>
+              <span>{materials.filter(m => m.groupPrice < m.price).length} Group Deals</span>
             </div>
           </div>
         </div>
 
-        {/* Materials Grid */}
-        {filteredMaterials.length === 0 ? (
+        {/* Loading State */}
+        {materialsLoading ? (
           <div className="text-center py-12">
-            <div className="text-gray-400 text-6xl mb-4">📦</div>
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No materials found</h3>
-            <p className="text-gray-600">
-              Try adjusting your search or filters to find what you're looking for.
-            </p>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading materials...</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {filteredMaterials.map((material) => (
-              <MaterialCard
-                key={material.id}
-                material={material}
-                onAddToCart={handleAddToCart}
-              />
-            ))}
-          </div>
-        )}
+          <>
+            {/* Materials Grid */}
+            {materials.length === 0 ? (
+              <div className="text-center py-12">
+                <div className="text-gray-400 text-6xl mb-4">📦</div>
+                <h3 className="text-lg font-medium text-gray-900 mb-2">No materials found</h3>
+                <p className="text-gray-600">
+                  Try adjusting your search or filters to find what you're looking for.
+                </p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {materials.map((material) => (
+                  <MaterialCard
+                    key={material.id}
+                    material={material}
+                    onAddToCart={handleAddToCart}
+                  />
+                ))}
+              </div>
+            )}
 
-        {/* Load More Button - Future Enhancement */}
-        {filteredMaterials.length > 0 && (
-          <div className="text-center mt-12">
-            <p className="text-gray-600">
-              Showing {filteredMaterials.length} of {rawMaterials.length} materials
-            </p>
-          </div>
+            {/* Load More Button - Future Enhancement */}
+            {materials.length > 0 && (
+              <div className="text-center mt-12">
+                <p className="text-gray-600">
+                  Showing {materials.length} materials
+                </p>
+              </div>
+            )}
+          </>
         )}
       </div>
 
