@@ -12,11 +12,7 @@ const MaterialCard = ({ material, onAddToCart }) => {
   const handleBuyNow = async () => {
     setIsLoading(true);
     try {
-      onAddToCart(material, 1, false);
-      toast({
-        title: "Added to Cart!",
-        description: `${material.name} has been added to your cart.`,
-      });
+      await onAddToCart(material, 1, false);
     } catch (error) {
       toast({
         title: "Error",
@@ -31,11 +27,7 @@ const MaterialCard = ({ material, onAddToCart }) => {
   const handleJoinGroup = async () => {
     setIsLoading(true);
     try {
-      onAddToCart(material, material.minGroupQuantity, true);
-      toast({
-        title: "Joined Group Deal!",
-        description: `You've joined the group deal for ${material.name}. Minimum quantity: ${material.minGroupQuantity} ${material.unit}`,
-      });
+      await onAddToCart(material, material.minGroupQuantity, true);
     } catch (error) {
       toast({
         title: "Error",
