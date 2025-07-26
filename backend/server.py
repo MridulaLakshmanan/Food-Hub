@@ -9,19 +9,19 @@ from pathlib import Path
 from typing import List, Optional
 from datetime import datetime
 
-# Import models and database functions
+ROOT_DIR = Path(__file__).parent
+load_dotenv(ROOT_DIR / '.env')
+
+# Import models and database functions after loading env vars
 from models import (
     RawMaterial, Supplier, Category, Cart, CartItem, Order,
     AddToCartRequest, UpdateCartItemRequest, MaterialsQuery, CheckoutRequest
 )
 from database import (
-    seed_database, get_all_suppliers, get_all_categories, 
+    initialize_database, seed_database, get_all_suppliers, get_all_categories, 
     get_materials_with_suppliers, suppliers_collection, categories_collection,
     carts_collection, orders_collection, materials_collection
 )
-
-ROOT_DIR = Path(__file__).parent
-load_dotenv(ROOT_DIR / '.env')
 
 # MongoDB connection
 mongo_url = os.environ['MONGO_URL']
