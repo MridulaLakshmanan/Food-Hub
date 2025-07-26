@@ -66,7 +66,7 @@ const Cart = ({ isOpen, onClose }) => {
 
         {/* Cart Items */}
         <div className="flex-1 overflow-y-auto p-4">
-          {cartItems.length === 0 ? (
+          {cart.items.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-gray-500">
               <ShoppingBag className="h-16 w-16 mb-4 text-gray-300" />
               <p className="text-lg font-medium">Your cart is empty</p>
@@ -74,23 +74,23 @@ const Cart = ({ isOpen, onClose }) => {
             </div>
           ) : (
             <div className="space-y-4">
-              {cartItems.map((item) => (
-                <Card key={`${item.id}-${item.isGroup}`} className="overflow-hidden">
+              {cart.items.map((item) => (
+                <Card key={item.id} className="overflow-hidden">
                   <CardContent className="p-4">
                     <div className="flex space-x-3">
                       <img
                         src={item.image}
-                        alt={item.name}
+                        alt={item.material_name}
                         className="w-16 h-16 object-cover rounded-md"
                       />
                       <div className="flex-1 min-w-0">
                         <div className="flex items-start justify-between">
                           <div>
                             <h3 className="text-sm font-medium text-gray-900 truncate">
-                              {item.name}
+                              {item.material_name}
                             </h3>
-                            <p className="text-xs text-gray-600">{item.supplier.name}</p>
-                            {item.isGroup && (
+                            <p className="text-xs text-gray-600">{item.supplier_name}</p>
+                            {item.is_group && (
                               <Badge className="bg-purple-100 text-purple-800 mt-1" size="sm">
                                 Group Deal
                               </Badge>
@@ -99,8 +99,9 @@ const Cart = ({ isOpen, onClose }) => {
                           <Button
                             variant="ghost"
                             size="sm"
-                            onClick={() => removeItem(item.id, item.isGroup)}
+                            onClick={() => handleRemoveItem(item.id)}
                             className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                            disabled={isLoading}
                           >
                             <X className="h-4 w-4" />
                           </Button>
@@ -111,8 +112,8 @@ const Cart = ({ isOpen, onClose }) => {
                             <Button
                               variant="outline"
                               size="sm"
-                              onClick={() => updateQuantity(item.id, item.quantity - 1, item.isGroup)}
-                              disabled={item.quantity <= 1}
+                              onClick={() => handleUpdateQuantity(item.id, item.quantity - 1)}
+                              disabled={item.quantity <= 1 || isLoading}
                               className="h-8 w-8 p-0"
                             >
                               <Minus className="h-3 w-3" />
@@ -123,7 +124,8 @@ const Cart = ({ isOpen, onClose }) => {
                             <Button
                               variant="outline"
                               size="sm"
-                              onClick={() => updateQuantity(item.id, item.quantity + 1, item.isGroup)}
+                              onClick={() => handleUpdateQuantity(item.id, item.quantity + 1)}
+                              disabled={isLoading}
                               className="h-8 w-8 p-0"
                             >
                               <Plus className="h-3 w-3" />
@@ -148,7 +150,7 @@ const Cart = ({ isOpen, onClose }) => {
         </div>
 
         {/* Footer - Checkout */}
-        {cartItems.length > 0 && (
+        {cart.items.length > 0 && (
           <div className="border-t border-gray-200 bg-gray-50 p-4">
             <div className="space-y-3">
               {/* Total */}
