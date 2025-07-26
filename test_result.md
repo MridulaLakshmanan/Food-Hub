@@ -235,3 +235,5 @@ test_plan:
 agent_communication:
     - agent: "testing"
       message: "Completed comprehensive backend API testing. 19 out of 21 tests passed (90.5% success rate). One critical issue found: Order history endpoint fails due to MongoDB ObjectId serialization. All other core functionality working correctly including materials, categories, suppliers, cart operations, and order creation."
+    - agent: "main"
+      message: "Fixed ObjectId serialization issue in order history retrieval endpoint. Implemented recursive convert_objectids_to_strings function to handle all nested ObjectIds properly. Ready for retesting the order history endpoint."
