@@ -12,21 +12,26 @@ from datetime import datetime
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
-# Import models and database functions after loading env vars
+# Import models
 from models import (
     RawMaterial, Supplier, Category, Cart, CartItem, Order,
     AddToCartRequest, UpdateCartItemRequest, MaterialsQuery, CheckoutRequest
-)
-from database import (
-    initialize_database, seed_database, get_all_suppliers, get_all_categories, 
-    get_materials_with_suppliers, suppliers_collection, categories_collection,
-    carts_collection, orders_collection, materials_collection
 )
 
 # MongoDB connection
 mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
+
+# Collections
+suppliers_collection = db.suppliers
+categories_collection = db.categories
+materials_collection = db.raw_materials
+carts_collection = db.carts
+orders_collection = db.orders
+
+# Import database functions
+from database import seed_database, get_all_suppliers, get_all_categories, get_materials_with_suppliers
 
 # Create the main app
 app = FastAPI()
@@ -38,8 +43,6 @@ api_router = APIRouter(prefix="/api")
 @app.on_event("startup")
 async def startup_event():
     try:
-        # Initialize database connection
-        initialize_database()
         result = await seed_database()
         print(f"Database initialization: {result}")
     except Exception as e:
